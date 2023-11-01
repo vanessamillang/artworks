@@ -37,6 +37,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 INSTALLED_APPS = [
     'collection.apps.CollectionConfig',
+    'artworks',
     'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',

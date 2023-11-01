@@ -1,0 +1,38 @@
+                       List of relations
+ Schema |               Name                |   Type   | Owner  
+--------+-----------------------------------+----------+--------
+ public | auth_group                        | table    | ubuntu
+ public | auth_group_id_seq                 | sequence | ubuntu
+ public | auth_group_permissions            | table    | ubuntu
+ public | auth_group_permissions_id_seq     | sequence | ubuntu
+ public | auth_permission                   | table    | ubuntu
+ public | auth_permission_id_seq            | sequence | ubuntu
+ public | auth_user                         | table    | ubuntu
+ public | auth_user_groups                  | table    | ubuntu
+ public | auth_user_groups_id_seq           | sequence | ubuntu
+ public | auth_user_id_seq                  | sequence | ubuntu
+ public | auth_user_user_permissions        | table    | ubuntu
+ public | auth_user_user_permissions_id_seq | sequence | ubuntu
+ public | django_admin_log                  | table    | ubuntu
+ public | django_admin_log_id_seq           | sequence | ubuntu
+ public | django_content_type               | table    | ubuntu
+ public | django_content_type_id_seq        | sequence | ubuntu
+ public | django_migrations                 | table    | ubuntu
+ public | django_migrations_id_seq          | sequence | ubuntu
+ public | django_session                    | table    | ubuntu
+ public | movies_genre                      | table    | ubuntu
+ public | movies_genre_id_seq               | sequence | ubuntu
+ public | movies_job                        | table    | ubuntu
+ public | movies_job_id_seq                 | sequence | ubuntu
+ public | movies_movie                      | table    | ubuntu
+ public | movies_movie_genres               | table    | ubuntu
+ public | movies_movie_genres_id_seq        | sequence | ubuntu
+ public | movies_movie_id_seq               | sequence | ubuntu
+ public | movies_moviecredit                | table    | ubuntu
+ public | movies_moviecredit_id_seq         | sequence | ubuntu
+ public | movies_moviereview                | table    | ubuntu
+ public | movies_moviereview_id_seq         | sequence | ubuntu
+ public | movies_person                     | table    | ubuntu
+ public | movies_person_id_seq              | sequence | ubuntu
+(33 rows)
+
