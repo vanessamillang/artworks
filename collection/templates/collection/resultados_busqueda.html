@@ -1,0 +1,23 @@
+{% extends "collection/base.html" %}
+
+{% block content %}
+    <div class="flex justify-center md:mx-auto md:max-w-screen-2xl px-2">
+        <h2 class="font-medium text-center text-2xl">Resultados de la búsqueda para "{{ query }}"</h2>
+    </div>
+
+    <div class="font-sans max-w-4xl mx-auto">
+        {% if elementos %}
+            {% for elemento in elementos %}
+                <div class="my-5 p-4 border border-gray-300 rounded-md">
+                    <h3 class="font-bold text-slate-700 text-lg">{{ elemento.nombre }}</h3>
+                    <p class="text-gray-500">Categoría: {{ elemento.categorias }}</p>
+                    <p class="text-gray-500">Etiquetas: {{ elemento.etiquetas }}</p>
+                    <!-- Agrega más detalles según tu modelo -->
+                    <img src="{{ elemento.imagen.url }}" alt="{{ elemento.nombre }}" class="max-w-full mt-4">
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center text-gray-500">No se encontraron resultados.</p>
+        {% endif %}
+    </div>
+{% endblock content %}

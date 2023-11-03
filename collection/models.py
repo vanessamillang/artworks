@@ -1,5 +1,15 @@
 from django.db import models
+from django.contrib.postgres.search import SearchVectorField
+from django.contrib.postgres.indexes import GinIndex
 
+class Elemento(models.Model):
+    nombre = models.CharField(max_length=255)
+    categorias = models.CharField(max_length=255)
+    etiquetas = models.CharField(max_length=255)
+    search_vector = SearchVectorField(null=True, blank=True)
+
+    class Meta:
+        indexes = [GinIndex(fields=['search_vector'])]
 
 class Artist(models.Model):
     slug = models.SlugField(max_length=80, unique=True)
