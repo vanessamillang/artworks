@@ -37,7 +37,6 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 INSTALLED_APPS = [
     'collection.apps.CollectionConfig',
-    'artworks',
     'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -62,7 +61,7 @@ ROOT_URLCONF = 'artworks.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

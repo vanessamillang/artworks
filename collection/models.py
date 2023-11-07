@@ -1,15 +1,6 @@
 from django.db import models
-from django.contrib.postgres.search import SearchVectorField
-from django.contrib.postgres.indexes import GinIndex
+from django.contrib.auth.models import User
 
-class Elemento(models.Model):
-    nombre = models.CharField(max_length=255)
-    categorias = models.CharField(max_length=255)
-    etiquetas = models.CharField(max_length=255)
-    search_vector = SearchVectorField(null=True, blank=True)
-
-    class Meta:
-        indexes = [GinIndex(fields=['search_vector'])]
 
 class Artist(models.Model):
     slug = models.SlugField(max_length=80, unique=True)
@@ -39,3 +30,9 @@ class Artwork(models.Model):
     genre = models.ForeignKey(Genre, null=True, on_delete=models.RESTRICT)
     image_url = models.URLField()
 
+
+class Collection(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.RESTRICT)
+    artworks = models.ManyToManyField(Artwork)
+    name = models.CharField(max_length=80)
+    description = models.TextField(blank=True)
