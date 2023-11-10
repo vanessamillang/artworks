@@ -1,12 +1,13 @@
+from django.shortcuts import render, get_object_or_404
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 import random
-from collection.models import Artwork
+from collection.models import Artwork, Collection, Artist
 from django.contrib.postgres import search
 from django.core.paginator import Paginator
-
+from .forms import CollectionForm
 
 def register(request):
     if request.method == 'POST':
@@ -27,32 +28,73 @@ def register(request):
 
 
 def artwork(request, artwork_id):
-
     artwork = Artwork.objects.get(pk=artwork_id)
-
     return render(request, 'collection/artwork.html', {'artwork': artwork})
+
+
+def collections(request):
+    collections = Collection.objects.filter(owner=request.user)
+    return render(request, 'collection/collections.html',
+                  {'collections': collections})
+
+
+def collection_list(request):
+    collections = Collection.objects.filter(owner=request.user)
+    return render(request, 'collection/collection_list.html',
+                  {'collections': collections})
+
+
+def collection_add(request):
+    form = None
+    if request.method == 'POST':
+        form = CollectionForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            description = form.cleaned_data['description']
+            collection = Collection(
+                    name=name,
+                    description=description,
+                    owner=request.user)
+            collection.save()
+            return HttpResponse(status=204,
+                                headers={'HX-Trigger': 'listChanged'})
+
+    return render(request,
+                  'collection/collection_form.html',
+                  {'form': form})
 
 
 def index(request):
     artworks = list(Artwork.objects.all())
     random_works = []
     if artworks:
-        random_works = random.sample(artworks, 12)
-
+        random_works = random.sample(artworks, 4)
     return render(request, 'collection/index.html', {'artworks': random_works})
 
+
+def random_artworks(request):
+    artworks = list(Artwork.objects.all())
+    random_works = []
+    if artworks:
+        random_works = random.sample(artworks, 4)
+    return render(request, 'collection/artworks_random.html',
+                  {'artworks': random_works})
+
+def artist_detail(request, artist_id):
+    artist = get_object_or_404(Artist, id=artist_id)
+    return render(request, 'collection/artist.html', {'artist': artist})
 
 def search_artworks(request):
     if request.method == 'GET':
         value = request.GET['search']
         artworks = ft_artworks(value)
 
-        paginator = Paginator(artworks, 8) 
+        paginator = Paginator(artworks, 4)
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
 
-        return render(request, 'collection/index.html',
-                      {'artworks': artworks, 'search_value': value, 
+        return render(request, 'collection/artwork_search.html',
+                      {'artworks': artworks, 'search_value': value,
                        "page_obj": page_obj})
     else:
         return render(request, 'collection/index.html',
@@ -74,5 +116,4 @@ def ft_artworks(value):
         )
         .filter(search=query)
         .order_by("-rank")
-    
     )
