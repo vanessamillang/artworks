@@ -1,6 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404, JsonResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 import random
@@ -8,6 +8,7 @@ from collection.models import Artwork, Collection, Artist
 from django.contrib.postgres import search
 from django.core.paginator import Paginator
 from .forms import CollectionForm
+from .models import Artwork, Collection
 
 def register(request):
     if request.method == 'POST':
@@ -42,7 +43,6 @@ def collection_list(request):
     collections = Collection.objects.filter(owner=request.user)
     return render(request, 'collection/collection_list.html',
                   {'collections': collections})
-
 
 def collection_add(request):
     form = None
@@ -117,3 +117,33 @@ def ft_artworks(value):
         .filter(search=query)
         .order_by("-rank")
     )
+
+def add_to_collection(request, artwork_id):
+    if request.method == 'POST':
+        collection_id = request.POST.get('collection_id')
+        artwork = get_object_or_404(Artwork, pk=artwork_id)
+        collection = get_object_or_404(Collection, pk=collection_id, owner=request.user)
+        
+        # Agregar la pintura a la colección
+        collection.artworks.add(artwork)
+        
+        return HttpResponse(status=204, headers={'HX-Trigger': 'listChanged'})
+
+    return HttpResponse(status=400)
+def artwork(request, artwork_id):
+    artwork = Artwork.objects.get(pk=artwork_id)
+    collections = Collection.objects.filter(owner=request.user)
+    return render(request, 'collection/artwork.html', {'artwork': artwork, 'collections': collections})
+
+def edit_collection(request, collection_id):
+    collection = get_object_or_404(Collection, id=collection_id)
+    # Aquí puedes agregar la lógica para editar la colección, si es necesario
+    return render(request, 'collection/edit_collection.html', {'collection': collection})
+    
+def delete_collection(request, collection_id):
+    if request.method == 'DELETE':
+        collection = get_object_or_404(Collection, id=collection_id, owner=request.user)
+        collection.delete()
+        return JsonResponse({'message': 'La colección ha sido eliminada correctamente.'})
+    else:
+        return JsonResponse({'message': 'Método no permitido'}, status=405)
