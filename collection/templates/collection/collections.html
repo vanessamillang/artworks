@@ -1,98 +1,43 @@
 {% extends "collection/base.html" %}
 
 {% block content %}
-<div class="container mx-auto px-5 py-2 lg:px-32 lg:pt-12">
-  <div class="px-4 sm:px-6 lg:px-8">
-    <div class="sm:flex sm:items-center">
-      <div class="sm:flex-auto">
-        <h1 class="text-base font-semibold leading-6 text-gray-900">Colecciones</h1>
-      </div>
-      <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-        <button type="button" class="block rounded-md bg-indigo-600 px-3
-                      py-2 text-center text-sm font-semibold text-white 
-                      shadow-sm hover:bg-indigo-500 focus-visible:outline 
-                      focus-visible:outline-2 focus-visible:outline-offset-2 
-                      focus-visible:outline-indigo-600"
-                      hx-get="/collection/add" hx-target="body" hx-swap="beforeend" 
-                  >Agrega una colección</button>
-      </div>
+<div class="container mx-auto px-5 py-2 lg:px-32 lg:pt-12 bg-blue-50">
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-base font-semibold leading-6 text-gray-900">Colecciones</h1>
     </div>
-    <div class="mt-8 flow-root">
-      <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-          <table class="min-w-full divide-y divide-gray-300">
-            <thead>
-              <tr>
-                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Name</th>
-                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Description</th>
-                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                  <span class="sr-only">Edit</span>
-                </th>
-                <th scope="col" class="py-3.5 pr-4">
-                  <span class="sr-only">Delete</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody hx-trigger="listChanged from:body" hx-get="{% url 'collection_list' %}" hx-target="this" class="divide-y divide-gray-200">
-              {% include "collection/collection_list.html" %}              
-            </tbody>
-          </table>
-        </div>
+    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+      <button type="button" class="block rounded-md bg-blue-500 px-3
+                    py-2 text-center text-sm font-semibold text-white 
+                    shadow-sm hover:bg-indigo-500 focus-visible:outline 
+                    focus-visible:outline-2 focus-visible:outline-offset-2 
+                    focus-visible:outline-indigo-600"
+                   hx-get="/collection/add" hx-target="body" hx-swap="beforeend" 
+                >Agrega una colección</button>
+    </div>
+  </div>
+  <div class="mt-8 flow-root ">
+    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        <table class="min-w-full divide-y divide-gray-300">
+          <thead>
+            <tr>
+              <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Nombre</th>
+              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Descripción</th>
+              <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
+                <span class="sr-only">Edit</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody  hx-trigger="listChanged from:body" 
+                  hx-get="{% url 'collection_list' %}" hx-target="this" class="divide-y divide-gray-200">
+         {% include "collection/collection_list.html" %}              
+         </tbody>
+        </table>
       </div>
     </div>
   </div>
 </div>
-
-<script>
-  function confirmDelete(collectionId) {
-    if (confirm("¿Estás seguro de que deseas eliminar esta colección?")) {
-      // Si el usuario hace clic en "Aceptar" en el cuadro de diálogo, realizar la eliminación.
-      deleteCollection(collectionId);
-    }
-  }
-
-  function deleteCollection(collectionId) {
-    // Realiza una solicitud AJAX para eliminar la colección.
-    fetch(`/collection/delete/${collectionId}`, {
-      method: 'DELETE',
-      headers: {
-        'X-CSRFToken': getCookie('csrftoken'),  // Asegúrate de ajustar esto según tu configuración de CSRF.
-      },
-    })
-    .then(response => {
-      if (response.ok) {
-        // Actualiza la lista después de la eliminación y reemplaza el contenido de la tabla.
-        fetchAndReplaceCollectionList();
-      } else {
-        console.error('Error al eliminar la colección:', response.statusText);
-      }
-    })
-    .catch(error => {
-      console.error('Error de red:', error);
-    });
-  }
-
-  // Función para obtener el valor de la cookie CSRF.
-  function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-  }
-
-  function fetchAndReplaceCollectionList() {
-    // Realiza una solicitud AJAX para obtener la nueva lista de colecciones.
-    fetch('{% url "collection_list" %}')
-      .then(response => response.text())
-      .then(html => {
-        // Reemplaza el contenido de la tabla con la nueva lista de colecciones.
-        document.querySelector('[hx-trigger="listChanged"]').outerHTML = html;
-      })
-      .catch(error => {
-        console.error('Error al obtener la lista de colecciones:', error);
-      });
-  }
-</script>
-
-
-
+</div>
 {% endblock content %}

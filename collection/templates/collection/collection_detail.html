@@ -1,0 +1,12 @@
+{% extends "collection/base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-5 py-2 lg:px-32 lg:pt-12">
+  <h1 class="text-base font-semibold leading-6 text-gray-900">Pinturas en {{ collection.name }}</h1>
+  <ul>
+    {% for painting in paintings %}
+      <li>{{ painting.title }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock content %}

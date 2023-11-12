@@ -1,6 +1,6 @@
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect, Http404, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 import random
@@ -8,7 +8,6 @@ from collection.models import Artwork, Collection, Artist
 from django.contrib.postgres import search
 from django.core.paginator import Paginator
 from .forms import CollectionForm
-from .models import Artwork, Collection
 
 def register(request):
     if request.method == 'POST':
@@ -30,8 +29,8 @@ def register(request):
 
 def artwork(request, artwork_id):
     artwork = Artwork.objects.get(pk=artwork_id)
-    return render(request, 'collection/artwork.html', {'artwork': artwork})
-
+    collections = Collection.objects.filter(owner=request.user)
+    return render(request, 'collection/artwork.html', {'artwork': artwork, 'collections': collections})
 
 def collections(request):
     collections = Collection.objects.filter(owner=request.user)
@@ -43,6 +42,7 @@ def collection_list(request):
     collections = Collection.objects.filter(owner=request.user)
     return render(request, 'collection/collection_list.html',
                   {'collections': collections})
+
 
 def collection_add(request):
     form = None
@@ -130,20 +130,26 @@ def add_to_collection(request, artwork_id):
         return HttpResponse(status=204, headers={'HX-Trigger': 'listChanged'})
 
     return HttpResponse(status=400)
-def artwork(request, artwork_id):
-    artwork = Artwork.objects.get(pk=artwork_id)
-    collections = Collection.objects.filter(owner=request.user)
-    return render(request, 'collection/artwork.html', {'artwork': artwork, 'collections': collections})
-
+    
 def edit_collection(request, collection_id):
     collection = get_object_or_404(Collection, id=collection_id)
-    # Aquí puedes agregar la lógica para editar la colección, si es necesario
+    if request.method == 'POST':
+        # Actualizar los campos de la colección  directamente
+        collection.name = request.POST.get('name')
+        collection.description = request.POST.get('description')
+        collection.save()
+        return  redirect('collections') 
     return render(request, 'collection/edit_collection.html', {'collection': collection})
     
 def delete_collection(request, collection_id):
-    if request.method == 'DELETE':
+    if request.method == 'POST':
         collection = get_object_or_404(Collection, id=collection_id, owner=request.user)
         collection.delete()
-        return JsonResponse({'message': 'La colección ha sido eliminada correctamente.'})
-    else:
-        return JsonResponse({'message': 'Método no permitido'}, status=405)
+        return HttpResponse(status=204, headers={'HX-Trigger': 'listChanged'})
+    return HttpResponse(status=400)
+
+    
+def view_collection(request, collection_id):
+    collection = Collection.objects.get(pk=collection_id)
+    artworks = collection.artworks.all()
+    return render(request, 'collection/view_collection.html', {'collection': collection, 'artworks': artworks})
