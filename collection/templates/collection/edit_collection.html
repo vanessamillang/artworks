@@ -1,3 +1,7 @@
+{% extends "collection/base.html" %}
+
+{% block content %}
+
 <!-- edit_collection.html -->
 <div id="modal" _="on closeModal or listChanged remove me" class="relative z-10" role="dialog" aria-modal="true">
   <div class="fixed inset-0 hidden bg-gray-500 bg-opacity-75 transition-opacity md:block"></div>
@@ -6,7 +10,7 @@
       <div class="relative flex w-full items-center overflow-hidden bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8">
         <form method="post" action="" hx-post="/collection/add" hx-target="#modal" hx-swap="outerHTML" class="bg-white w-full md:col-span-2 px-4 py-3 sm:p-8">
           {% csrf_token %}
-          <p class="block overflow-hidden text-ellipsis mb-4 dark:text-gray-200 text-xl font-bold"> Agrega una Colección </p>
+          <p class="block overflow-hidden text-ellipsis mb-4 dark:text-gray-200 text-xl font-bold"> Editar una Colección </p>
           <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div class="sm:col-span-4">
               <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Nombre</label>
@@ -52,5 +56,5 @@
     </div>
   </div>
 </div>
-
+{% endblock content %}
  
